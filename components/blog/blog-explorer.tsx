@@ -4,11 +4,13 @@ import { useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import Fuse from 'fuse.js'
 import { PostCard, type PostCardData } from '@/components/blog/post-card'
+import { localizeHref, messages, type Locale } from '@/lib/i18n'
 
 type IndexEntry = { slug: string; title: string; description: string; tags: string[]; text: string }
 type Tag = { name: string; slug: string; count: number }
 
-export function BlogExplorer({ posts, tags }: { posts: PostCardData[]; tags: Tag[] }) {
+export function BlogExplorer({ posts, tags, locale }: { posts: PostCardData[]; tags: Tag[]; locale: Locale }) {
+  const t = messages[locale].blog
   const [query, setQuery] = useState('')
   const [activeTag, setActiveTag] = useState<string | null>(null)
   const [fuse, setFuse] = useState<Fuse<IndexEntry> | null>(null)
@@ -41,10 +43,21 @@ export function BlogExplorer({ posts, tags }: { posts: PostCardData[]; tags: Tag
 
   const visible = useMemo(() => {
     let list = posts
-    const q = query.trim()
-    if (q && fuse) {
-      const order = new Map(fuse.search(q).map((r, i) => [r.item.slug, i]))
-      list = list.filter((p) => order.has(p.slug)).sort((a, b) => order.get(a.slug)! - order.get(b.slug)!)
+    const q = query.trim().toLowerCase()
+    if (q) {
+      const localHits = new Set(
+        posts
+          .filter((p) => `${p.title} ${p.description} ${p.tags.join(' ')}`.toLowerCase().includes(q))
+          .map((p) => p.slug),
+      )
+      if (fuse) {
+        const order = new Map(fuse.search(query.trim()).map((r, i) => [r.item.slug, i]))
+        list = list
+          .filter((p) => order.has(p.slug) || localHits.has(p.slug))
+          .sort((a, b) => (order.get(a.slug) ?? 999) - (order.get(b.slug) ?? 999))
+      } else {
+        list = list.filter((p) => localHits.has(p.slug))
+      }
     }
     if (activeTag) list = list.filter((p) => p.tagSlugs.includes(activeTag))
     return list
@@ -56,8 +69,8 @@ export function BlogExplorer({ posts, tags }: { posts: PostCardData[]; tags: Tag
         <input
           type="search"
           className="search-input"
-          placeholder="Search posts…"
-          aria-label="Search posts"
+          placeholder={t.searchPlaceholder}
+          aria-label={t.search}
           value={query}
           onFocus={loadIndex}
           onChange={(e) => {
@@ -66,19 +79,19 @@ export function BlogExplorer({ posts, tags }: { posts: PostCardData[]; tags: Tag
           }}
         />
         {tags.length > 0 && (
-          <div className="chip-row" role="group" aria-label="Filter by tag">
+          <div className="chip-row" role="group" aria-label={t.filter}>
             <button type="button" className="chip" aria-pressed={activeTag === null} onClick={() => setActiveTag(null)}>
-              All
+              {t.all}
             </button>
-            {tags.map((t) => (
+            {tags.map((tag) => (
               <button
-                key={t.slug}
+                key={tag.slug}
                 type="button"
                 className="chip"
-                aria-pressed={activeTag === t.slug}
-                onClick={() => setActiveTag(activeTag === t.slug ? null : t.slug)}
+                aria-pressed={activeTag === tag.slug}
+                onClick={() => setActiveTag(activeTag === tag.slug ? null : tag.slug)}
               >
-                {t.name} <span aria-hidden="true">{t.count}</span>
+                {tag.name} <span aria-hidden="true">{tag.count}</span>
               </button>
             ))}
           </div>
@@ -87,19 +100,19 @@ export function BlogExplorer({ posts, tags }: { posts: PostCardData[]; tags: Tag
 
       {visible.length === 0 ? (
         <p className="empty-note" role="status">
-          {query && !fuse ? 'Searching…' : 'No posts match.'}
+          {query && !fuse ? t.searching : t.none}
         </p>
       ) : (
         <div className="post-grid">
           {visible.map((p) => (
-            <PostCard key={p.slug} post={p} />
+            <PostCard key={p.slug} post={p} locale={locale} />
           ))}
         </div>
       )}
       {activeTag && (
         <p className="form-status">
-          <Link href={`/blog/tags/${activeTag}`} className="text-link">
-            Open tag page
+          <Link href={localizeHref(locale, `/blog/tags/${activeTag}`)} className="text-link">
+            {t.tagPage}
           </Link>
         </p>
       )}

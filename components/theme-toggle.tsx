@@ -5,7 +5,7 @@ import { Moon, Sun } from 'lucide-react'
 
 import { THEME_KEY } from '@/lib/theme'
 
-export function ThemeToggle() {
+export function ThemeToggle({ lightLabel, darkLabel }: { lightLabel: string; darkLabel: string }) {
   const [dark, setDark] = useState<boolean | null>(null)
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export function ThemeToggle() {
       className="theme-toggle"
       type="button"
       onClick={toggleTheme}
-      aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+      aria-label={dark ? lightLabel : darkLabel}
     >
       {dark === null ? null : dark ? <Sun /> : <Moon />}
     </button>

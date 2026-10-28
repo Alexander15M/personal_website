@@ -4,48 +4,58 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft, ArrowUpRight } from 'lucide-react'
 import { Mdx } from '@/components/mdx'
 import { getAllProjects, getProject } from '@/lib/content'
+import { isLocale, localizeHref, messages, pageAlternates } from '@/lib/i18n'
+import { localizeProject } from '@/lib/localize'
 
-type Props = { params: Promise<{ slug: string }> }
+type Props = { params: Promise<{ locale: string; slug: string }> }
 
 export function generateStaticParams() {
   return getAllProjects().map((p) => ({ slug: p.slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
+  const { locale, slug } = await params
+  if (!isLocale(locale)) return {}
   const project = getProject(slug)
   if (!project) return {}
+  const copy = localizeProject(project, locale)
+  const path = `/projects/${slug}`
   return {
     title: project.title,
-    description: project.description,
-    alternates: { canonical: `/projects/${slug}` },
-    openGraph: { type: 'website', title: project.title, description: project.description, url: `/projects/${slug}` },
+    description: copy.description,
+    alternates: pageAlternates(locale, path),
+    openGraph: { type: 'website', title: project.title, description: copy.description, url: localizeHref(locale, path) },
   }
 }
 
 export default async function ProjectPage({ params }: Props) {
-  const { slug } = await params
+  const { locale, slug } = await params
+  if (!isLocale(locale)) notFound()
   const project = getProject(slug)
   if (!project) notFound()
+  const copy = localizeProject(project, locale)
+  const t = messages[locale].project
 
   return (
     <>
       <div className="page-head">
-        <Link href="/#work" className="back-link">
-          <ArrowLeft size={14} /> All projects
+        <Link href={localizeHref(locale, '/#work')} className="back-link">
+          <ArrowLeft size={14} /> {t.all}
         </Link>
         <h1>{project.title}</h1>
-        <p className="lead">{project.description}</p>
+        <p className="lead">{copy.description}</p>
         <div className={`project-hero ${project.accent}`}>
           <div className="meta-row" style={{ marginTop: 0, color: 'rgba(255,255,255,.8)' }}>
-            <span>{project.type}</span>
-            <span>Status: {project.status}</span>
+            <span>{copy.type}</span>
+            <span>
+              {t.status}: {copy.status}
+            </span>
           </div>
           {project.technologies.length > 0 && (
             <div className="chip-row" style={{ marginTop: '1.2rem' }}>
-              {project.technologies.map((t) => (
-                <span key={t} className="chip">
-                  {t}
+              {project.technologies.map((tech) => (
+                <span key={tech} className="chip">
+                  {tech}
                 </span>
               ))}
             </div>
@@ -54,12 +64,12 @@ export default async function ProjectPage({ params }: Props) {
             <div className="project-links">
               {project.demo && (
                 <a href={project.demo} className="text-link" style={{ color: 'white' }} target="_blank" rel="noreferrer">
-                  Visit site <ArrowUpRight size={14} />
+                  {t.visit} <ArrowUpRight size={14} />
                 </a>
               )}
               {project.github && (
                 <a href={project.github} className="text-link" style={{ color: 'white' }} target="_blank" rel="noreferrer">
-                  Source <ArrowUpRight size={14} />
+                  {t.source} <ArrowUpRight size={14} />
                 </a>
               )}
             </div>

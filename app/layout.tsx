@@ -1,12 +1,13 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
+import { headers } from 'next/headers'
 import { themeInitScript } from '@/lib/theme'
 import { SITE } from '@/lib/site'
 import './globals.css'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
-  title: { default: SITE.title, template: `%s — ${SITE.name}` },
+  title: { default: SITE.title, template: `%s, ${SITE.name}` },
   description: SITE.description,
   authors: [{ name: SITE.name, url: SITE.url }],
   alternates: { types: { 'application/rss+xml': '/rss.xml' } },
@@ -30,9 +31,10 @@ export const viewport: Viewport = {
   ],
 }
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const locale = (await headers()).get('x-locale') === 'es' ? 'es' : 'en'
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>

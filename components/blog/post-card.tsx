@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { localizeHref, messages, type Locale } from '@/lib/i18n'
 
 export type PostCardData = {
   slug: string
@@ -11,12 +12,13 @@ export type PostCardData = {
   draft: boolean
 }
 
-export function PostCard({ post }: { post: PostCardData }) {
+export function PostCard({ post, locale }: { post: PostCardData; locale: Locale }) {
+  const t = messages[locale].blog
   return (
-    <Link href={`/blog/${post.slug}`} className="post-card">
+    <Link href={localizeHref(locale, `/blog/${post.slug}`)} className="post-card">
       <span className="meta">
-        {post.draft && <span className="draft-badge">Draft · </span>}
-        {post.date} · {post.readingMinutes} min read
+        {post.draft && <span className="draft-badge">{t.draft} · </span>}
+        {post.date} · {post.readingMinutes} {t.minRead}
       </span>
       <h2>{post.title}</h2>
       <p>{post.description}</p>

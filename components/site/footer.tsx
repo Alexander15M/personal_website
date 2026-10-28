@@ -1,9 +1,10 @@
-import Link from 'next/link'
 import { Mail, Rss } from 'lucide-react'
 import { GithubIcon, LinkedinIcon } from '@/components/icons'
+import { messages, type Locale } from '@/lib/i18n'
 import { SITE } from '@/lib/site'
 
-export function SiteFooter() {
+export function SiteFooter({ locale }: { locale: Locale }) {
+  const t = messages[locale]
   return (
     <footer>
       <span>
@@ -16,20 +17,15 @@ export function SiteFooter() {
         <a href={SITE.linkedin} aria-label="LinkedIn" target="_blank" rel="noreferrer">
           <LinkedinIcon />
         </a>
-        {SITE.email ? (
-          <a href={`mailto:${SITE.email}`} aria-label="Email">
-            <Mail />
-          </a>
-        ) : (
-          <Link href="/contact" aria-label="Contact">
-            <Mail />
-          </Link>
-        )}
-        <a href="/rss.xml" aria-label="RSS feed">
+        <a href={`mailto:${SITE.email}`} className="footer-email" aria-label={t.footer.email}>
+          <Mail />
+          <span>{SITE.email}</span>
+        </a>
+        <a href="/rss.xml" aria-label={t.footer.rss}>
           <Rss />
         </a>
       </div>
-      <span>Built with curiosity and intention.</span>
+      <span>{t.footer.built}</span>
     </footer>
   )
 }

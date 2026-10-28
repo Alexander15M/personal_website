@@ -132,8 +132,8 @@ export function getProject(slug: string) {
   return getAllProjects().find((p) => p.slug === slug)
 }
 
-export const formatDate = (d: Date) =>
-  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' })
+export const formatDate = (d: Date, locale: 'en' | 'es' = 'en') =>
+  d.toLocaleDateString(locale === 'es' ? 'es-ES' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' })
 
 export const shortDate = (d: Date) =>
   `${String(d.getUTCMonth() + 1).padStart(2, '0')}.${String(d.getUTCDate()).padStart(2, '0')}.${String(d.getUTCFullYear()).slice(2)}`
