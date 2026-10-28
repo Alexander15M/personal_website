@@ -1,0 +1,70 @@
+---
+title: "HelloHaven"
+description: "Personal AI assistant that remembers your life, reaches you on any channel, and actually gets things done"
+technologies: ["TypeScript", "React", "Vite", "Capacitor", "Supabase", "Node.js", "Fastify", "LangGraph"]
+status: "Active"
+demo: "https://hellohaven.ai"
+number: "01"
+type: "Software · AI"
+accent: "violet"
+icon: "sparkles"
+order: 1
+---
+
+## Overview
+
+[HelloHaven](https://hellohaven.ai) is a personal AI assistant built to take work off your plate, not just answer questions. You can call, text, email, or open the app. Haven remembers your people, preferences, and routines, then books, plans, reminds, and follows up so you spend less time managing your life.
+
+## The Problem
+
+Most AI tools still leave you holding the list:
+
+- **Chat, not action**: Models draft a plan and stop there. You still have to book, buy, and remember.
+- **No memory of you**: Every session starts over. Preferences, family schedules, and past decisions do not carry forward.
+- **Channel lock-in**: Help lives in one app. Real life happens on the phone, in texts, and in email.
+- **Tool sprawl**: Notes, calendars, lists, and chatbots sit in separate places, so nothing has the full picture.
+
+## Our Solution
+
+Haven is built as one assistant across every channel, with a personal memory graph and the ability to act:
+
+### Reach Haven, and Haven reaches you
+- Call, text, email, web, iOS, and Android
+- Haven can also call, text, or email you before you have to ask
+- One conversation, not a new thread in every app
+
+### Memory that belongs to you
+- A living record of preferences, people, routines, and judgment
+- You can see what is in it and stay in control of it
+- Data is not sold and is not used to train the models behind Haven
+
+### Action, not just answers
+- Book, buy, plan, coordinate, and remind
+- Triage email, keep an agenda, and keep lists, notes, and documents in one place
+- Pick the right model for the task instead of locking you to a single AI
+
+## Key Features
+
+- **Second brain**: Conversations, lists, documents, notes, and reminders in one library
+- **Proactive check-ins**: Reminders and follow-ups on the channel that fits the moment
+- **Multi-model routing**: Reasoning, search, documents, images, and actions each use the right tool
+- **Developer API**: Chat, memory search, notes, reminders, and profile access for integrations
+- **Privacy by design**: Private by default, safety tested, never trained on you
+
+## Technical Approach
+
+The product is split across two codebases.
+
+### App
+
+The client is a Vite, React, and TypeScript single-page app. iOS and Android ship that same bundle inside Capacitor. Supabase holds auth, Postgres, storage, and a large set of edge functions for reminders, SMS, iMessage, email, and voice setup. Chat from the app goes to an edge function, which forwards the turn to the runtime and streams the reply back.
+
+### Runtime
+
+The agent service is Node.js and TypeScript on Fastify. Each turn runs a LangGraph orchestrator: it picks a model, loads memory, and calls tools and sub-agents. Models are routed through OpenRouter. Tools cover search, documents, media, browser tasks, code execution, and user-connected MCP servers. Voice, SMS, iMessage, email, and scheduled sends are first-class channels. Follow-up work is queued with Inngest. The service ships as Docker on AWS.
+
+## Links
+
+- Product: [hellohaven.ai](https://hellohaven.ai)
+- App: [iOS](https://apps.apple.com/us/app/hello-haven/id6760667668) and Android
+- Web app: [app.hellohaven.ai](https://app.hellohaven.ai)
