@@ -13,25 +13,16 @@ export function stripLocale(pathname: string): string {
   return pathname || '/'
 }
 
-/** English stays unprefixed. Spanish lives under /es. Hash is preserved. */
-export function localizeHref(locale: Locale, path: string): string {
+/** Public URLs stay the same in both languages. Hash is preserved. */
+export function localizeHref(_locale: Locale, path: string): string {
   const hashAt = path.indexOf('#')
   const hash = hashAt >= 0 ? path.slice(hashAt) : ''
   const pathname = hashAt >= 0 ? path.slice(0, hashAt) || '/' : path
-  const bare = stripLocale(pathname)
-  const localized = locale === defaultLocale ? bare : bare === '/' ? '/es' : `/es${bare}`
-  return `${localized}${hash}`
+  return `${stripLocale(pathname)}${hash}`
 }
 
 export function pageAlternates(locale: Locale, path: string) {
-  return {
-    canonical: localizeHref(locale, path),
-    languages: {
-      en: localizeHref('en', path),
-      es: localizeHref('es', path),
-      'x-default': localizeHref('en', path),
-    },
-  }
+  return { canonical: localizeHref(locale, path) }
 }
 
 const en = {

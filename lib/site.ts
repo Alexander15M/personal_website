@@ -1,7 +1,7 @@
 export const SITE = {
   name: 'Alexander Meneses',
   shortName: 'AM',
-  title: 'Alexander Meneses,  Developer & Physicist',
+  title: 'Alexander Meneses, Developer & Physicist',
   description:
     'Alexander Meneses is a physicist turned software engineer building useful tools and exploring complex systems.',
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://alexanderdev-website.netlify.app').replace(/\/$/, ''),

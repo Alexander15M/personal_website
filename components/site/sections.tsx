@@ -29,9 +29,15 @@ export function Hero({ locale }: { locale: Locale }) {
         </Link>
       </div>
       <div className="hero-orbit" aria-hidden="true">
-        <div />
-        <div />
-        <div />
+        <span className="orbit-track">
+          <i />
+        </span>
+        <span className="orbit-track">
+          <i className="accent" />
+        </span>
+        <span className="orbit-track mid">
+          <i />
+        </span>
       </div>
     </section>
   )

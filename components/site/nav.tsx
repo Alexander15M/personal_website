@@ -2,28 +2,21 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { ArrowUpRight, Menu, X } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { cn } from '@/lib/utils'
-import { localizeHref, messages, stripLocale, type Locale } from '@/lib/i18n'
+import { localizeHref, messages, type Locale } from '@/lib/i18n'
 import { SITE } from '@/lib/site'
 
 export function SiteNav({ locale }: { locale: Locale }) {
   const [open, setOpen] = useState(false)
-  const [hash, setHash] = useState('')
   const pathname = usePathname()
+  const router = useRouter()
   const t = messages[locale]
 
   useEffect(() => setOpen(false), [pathname])
-
-  useEffect(() => {
-    const sync = () => setHash(window.location.hash)
-    sync()
-    window.addEventListener('hashchange', sync)
-    return () => window.removeEventListener('hashchange', sync)
-  }, [pathname])
 
   useEffect(() => {
     if (!open) return
@@ -32,8 +25,11 @@ export function SiteNav({ locale }: { locale: Locale }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
 
-  const bare = stripLocale(pathname)
-  const hrefFor = (target: Locale) => localizeHref(target, `${bare}${hash}`)
+  function chooseLocale(next: Locale) {
+    if (next === locale) return
+    document.cookie = `locale=${next}; Path=/; Max-Age=31536000; SameSite=Lax`
+    router.refresh()
+  }
 
   return (
     <header className="site-header">
@@ -50,7 +46,7 @@ export function SiteNav({ locale }: { locale: Locale }) {
           ))}
         </div>
         <div className="nav-actions">
-          <LangSwitch locale={locale} hrefFor={hrefFor} label={t.language} />
+          <LangSwitch locale={locale} onChoose={chooseLocale} label={t.language} />
           <ThemeToggle lightLabel={t.themeLight} darkLabel={t.themeDark} />
           <Link href={localizeHref(locale, '/contact')} className={cn(buttonVariants({ size: 'sm' }), 'nav-cta hidden sm:inline-flex')}>
             {t.talk} <ArrowUpRight data-icon="inline-end" />
@@ -82,25 +78,19 @@ export function SiteNav({ locale }: { locale: Locale }) {
 
 function LangSwitch({
   locale,
-  hrefFor,
+  onChoose,
   label,
 }: {
   locale: Locale
-  hrefFor: (target: Locale) => string
+  onChoose: (locale: Locale) => void
   label: string
 }) {
   return (
     <div className="lang-switch" role="group" aria-label={label}>
       {(['en', 'es'] as const).map((target) => (
-        <Link
-          key={target}
-          href={hrefFor(target)}
-          hrefLang={target}
-          lang={target}
-          aria-current={locale === target ? 'true' : undefined}
-        >
+        <button key={target} type="button" lang={target} aria-pressed={locale === target} onClick={() => onChoose(target)}>
           {target.toUpperCase()}
-        </Link>
+        </button>
       ))}
     </div>
   )
