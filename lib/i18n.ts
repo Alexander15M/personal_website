@@ -280,18 +280,18 @@ export function tagLabel(locale: Locale, name: string) {
 
 const projectEs: Record<string, { description: string; type: string; status: string }> = {
   hellohaven: {
-    description: 'Asistente de IA personal que recuerda tu vida, te encuentra en cualquier canal y de verdad resuelve cosas',
+    description: 'Haven es una IA personal por chat, texto, correo o teléfono, con listas, documentos y recordatorios',
     type: 'Software · IA',
     status: 'Activo',
   },
   sara: {
-    description: 'Asistente de voz para restaurantes: pedir comida hablando, con IA',
-    type: 'Interfaz de voz · SaaS',
+    description: 'SARA contesta el teléfono del restaurante, toma pedidos para recoger y manda un enlace de pago de Square',
+    type: 'Software · IA de voz',
     status: 'Activo',
   },
   flowops: {
-    description: 'Plataforma de operaciones para agentes inmobiliarios: tratos, visitas, proyectos y automatizaciones en un solo lugar',
-    type: 'Inmobiliaria · Operaciones',
+    description: 'FlowOps junta los tratos, las visitas, los contactos y el seguimiento de un equipo inmobiliario',
+    type: 'Software · Inmobiliaria',
     status: 'Activo',
   },
   loma: {

@@ -1,9 +1,9 @@
 ---
 title: "HelloHaven"
-description: "Personal AI assistant that remembers your life, reaches you on any channel, and actually gets things done"
-technologies: ["TypeScript", "React", "Vite", "Capacitor", "Supabase", "Node.js", "Fastify", "LangGraph"]
+description: "Haven is a personal AI you reach by chat, text, email, or phone, keeping lists, docs, and reminders"
+technologies: ["React", "TypeScript", "Vite", "Supabase", "Capacitor", "Twilio", "Vapi", "Composio"]
 status: "Active"
-demo: "https://hellohaven.ai"
+demo: "https://app.hellohaven.ai"
 number: "01"
 type: "Software · AI"
 accent: "violet"
@@ -24,58 +24,42 @@ order: 1
 
 ## Overview
 
-[HelloHaven](https://hellohaven.ai) is a personal AI assistant built to take work off your plate, not just answer questions. You can call, text, email, or open the app. Haven remembers your people, preferences, and routines, then books, plans, reminds, and follows up so you spend less time managing your life.
+Haven is a personal AI for someone running their own day. The web app and the iPhone and Android apps share one account with text, email, and phone: +1 (435) 260-6500 and chat@hellohaven.ai. Lists, documents, reminders, and the profile on You stay on that account, so a request started in Chat can be opened later in Library. After a calendar or inbox is connected, Haven can read it and act on it once the person approves the action in Chat.
 
-## The Problem
+## The problem
 
-Most AI tools still leave you holding the list:
+A chat thread, a grocery list, a reminder, and an inbox usually live in different apps and do not share what was already said. None of those apps answer a text or a phone call, and starting a new thread drops the list, the document, and the profile. Haven keeps those pieces on one account that can be reached from the app, from email, or from the phone.
 
-- **Chat, not action**: Models draft a plan and stop there. You still have to book, buy, and remember.
-- **No memory of you**: Every session starts over. Preferences, family schedules, and past decisions do not carry forward.
-- **Channel lock-in**: Help lives in one app. Real life happens on the phone, in texts, and in email.
-- **Tool sprawl**: Notes, calendars, lists, and chatbots sit in separate places, so nothing has the full picture.
+## What it does
 
-## Our Solution
+### Chat, text, email, and phone
 
-Haven is built as one assistant across every channel, with a personal memory graph and the ability to act:
+- Chat switches between Quick Ask, one running thread, and Conversations, separate threads. The box takes typed text, Dictate, and the + menu: Take Photo, Upload, From Haven's Brain, From Haven Docs, and From Haven Lists.
+- The Chat reach menu opens Call Me, Text Me, Email Me, Voice Chat, and Contact Card. Call and text use +1 (435) 260-6500. Email opens chat@hellohaven.ai.
+- Voice Chat starts a spoken session in the app. Feed suggestions either send a prompt into a new Chat conversation or open another screen, and each one can be dismissed.
+- Library → Conversations lists threads and filters them by App, SMS, Group Chat, Voice, Email, Scheduled, or Shared.
 
-### Reach Haven, and Haven reaches you
-- Call, text, email, web, iOS, and Android
-- Haven can also call, text, or email you before you have to ask
-- One conversation, not a new thread in every app
+### Lists, documents, and reminders
 
-### Memory that belongs to you
-- A living record of preferences, people, routines, and judgment
-- You can see what is in it and stay in control of it
-- Data is not sold and is not used to train the models behind Haven
+- Apps → Keep Organized opens Lists, Docs, Sticky Notes, Note Taker, and Agenda. Agenda is marked beta.
+- Library shows the same Lists, Docs, and Sticky Notes, plus Images, Videos, and Audio.
+- Library → Reminders → New reminder sets a repeat of Once, Daily, Weekly, Monthly, or Yearly, and Send via Email, SMS, or Call.
+- Before Haven sends a message or places a call, Chat shows an approval card. You → Your Haven → Advanced has the switch Let Haven act without asking.
 
-### Action, not just answers
-- Book, buy, plan, coordinate, and remind
-- Triage email, keep an agenda, and keep lists, notes, and documents in one place
-- Pick the right model for the task instead of locking you to a single AI
+### Apps and focus rooms
 
-## Key Features
+- Apps groups tiles into Keep Organized, Know Yourself, Focus & Wellbeing, and five skill rows: Run My Day, Shop, Book & Return, Make Something, Life & Home, and Play & Connect.
+- Tapping a skill puts its prompt in the chat box so it can be edited before it is sent. A pin on a tile keeps it at the top of Apps on that device.
+- Focus & Wellbeing opens Journal, Brain Dump, and Decide. Ground, Body Double, Worry Window, and Spark are marked beta.
+- Know Yourself opens Patterns and YouIQ. Both tiles are marked beta.
 
-- **Second brain**: Conversations, lists, documents, notes, and reminders in one library
-- **Proactive check-ins**: Reminders and follow-ups on the channel that fits the moment
-- **Multi-model routing**: Reasoning, search, documents, images, and actions each use the right tool
-- **Developer API**: Chat, memory search, notes, reminders, and profile access for integrations
-- **Privacy by design**: Private by default, safety tested, never trained on you
+### You, memory, and connected tools
 
-## Technical Approach
+- You has four tabs: About You, Your Haven, Account, and Help. Help & Community is also at /v3/feedback.
+- Your Haven opens Haven's identity, Personality, How Haven reaches you, Display, Advanced, and Connected tools.
+- Connected tools lists services to connect. Triggered automations can run from a connected tool, a Slack DM, or a schedule, and scheduled automations live under Library.
+- Library also has Memory and Time Capsule, next to the conversations, lists, docs, and reminders.
 
-The product is split across two codebases.
+## Technical approach
 
-### App
-
-The client is a Vite, React, and TypeScript single-page app. iOS and Android ship that same bundle inside Capacitor. Supabase holds auth, Postgres, storage, and a large set of edge functions for reminders, SMS, iMessage, email, and voice setup. Chat from the app goes to an edge function, which forwards the turn to the runtime and streams the reply back.
-
-### Runtime
-
-The agent service is Node.js and TypeScript on Fastify. Each turn runs a LangGraph orchestrator: it picks a model, loads memory, and calls tools and sub-agents. Models are routed through OpenRouter. Tools cover search, documents, media, browser tasks, code execution, and user-connected MCP servers. Voice, SMS, iMessage, email, and scheduled sends are first-class channels. Follow-up work is queued with Inngest. The service ships as Docker on AWS.
-
-## Links
-
-- Product: [hellohaven.ai](https://hellohaven.ai)
-- App: [iOS](https://apps.apple.com/us/app/hello-haven/id6760667668) and Android
-- Web app: [app.hellohaven.ai](https://app.hellohaven.ai)
+This repository is the Haven client and its Supabase backend. The Daylight interface is a React and TypeScript app built with Vite, with Capacitor projects for iPhone and Android. Supabase stores the account and the records behind conversations, lists, documents, reminders, and connected tools. Edge functions send reminder email through Resend and SMS or calls through Twilio. Chat turns, job streams, browser control, and user-added MCP servers go to a separate Haven runtime. In-app voice uses Vapi, and the Connected tools catalog is loaded through Composio.

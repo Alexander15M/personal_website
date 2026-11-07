@@ -1,10 +1,10 @@
 ---
 title: "Sara"
-description: "Smart Automated Restaurant Assistant for Ordering Food with Voice AI"
-technologies: ["Voice AI", "Natural Language Processing", "Machine Learning", "Node.js", "React", "WebRTC"]
+description: "SARA answers a restaurant phone line, takes pickup orders, and texts a Square checkout link"
+technologies: ["Next.js", "tRPC", "Prisma", "PostgreSQL", "Vapi", "OpenAI", "Square", "Twilio"]
 status: "Active"
 number: "02"
-type: "Voice interface · SaaS"
+type: "Software · Voice AI"
 accent: "orange"
 icon: "mic"
 image: "/images/projects/sara-card.png"
@@ -23,71 +23,52 @@ order: 2
 
 ## Overview
 
-Sara is an innovative voice-powered restaurant assistant designed to revolutionize the food ordering experience. By leveraging advanced voice recognition and natural language processing technologies, Sara enables customers to place orders naturally through voice commands, making the dining experience more accessible and efficient.
+SARA is a phone assistant for restaurants that take pickup orders. The caller talks through the order, SARA matches it to the Square menu, and a text message carries a Square payment link. The owner sets the greeting, the voice, and a reservation link in the app, so the counter does not have to take that call, total the ticket, or send the checkout.
 
-## The Problem
+## The problem
 
-Traditional restaurant ordering systems often create bottlenecks during peak hours, leading to:
-- Long wait times for customers
-- Increased pressure on staff
-- Order accuracy issues due to miscommunication
-- Limited accessibility for customers with disabilities
-- Reduced efficiency during busy periods
+A pickup order still means a person on the phone while the counter is serving. They have to hear the items, match variations and modifiers, repeat a total, confirm a mobile number, and get the guest to pay. A reservation is a separate interruption, and a caller who switches to Spanish needs the same conversation in that language.
 
-## Our Solution
+## What it does
 
-Sara addresses these challenges through intelligent automation:
+### Set up the restaurant
 
-### Voice Recognition & NLP
-- Advanced speech-to-text processing with 95%+ accuracy
-- Natural language understanding that handles various accents and speaking patterns
-- Context-aware conversation management
-- Multi-language support for diverse customer bases
+- Sign up, then onboarding step 1 saves the account name and avatar.
+- Step 2 creates the restaurant from its name. Step 3, Change Business Details, saves open and close times, days open, address, and a contact number.
+- Settings, under Restaurant and then General, keeps the restaurant name, avatar, Square location, and those same business details.
+- Settings, under Restaurant and then Billing, is where the subscription is turned on. If the restaurant has no phone number yet, Dashboard shows Create Assistant only while the subscription is active or trialing. Otherwise it links to Billing.
 
-### Smart Order Management
-- Real-time menu integration with availability updates
-- Intelligent upselling and recommendation engine
-- Dietary restriction and allergy management
-- Order modification and confirmation workflows
+### Sync Square
 
-### Seamless Integration
-- Easy integration with existing POS systems
-- Staff notification system for special requests
-- Real-time kitchen communication
-- Customer preference learning and storage
+- Integrations, titled Sync with POS systems, connects the Square account.
+- After it connects, Add Menu with items from Square, or Update Menu with items from Square, copies catalog names, variations, prices, quantities, and item ids onto the assistant.
+- Orders opens a sheet with order id, line items, total, and status, plus Refresh Orders and paging.
+- Stock opens an inventory sheet with Refresh and paging.
 
-## Key Features
+### Open the phone line
 
-- **Voice-First Interface**: Natural conversation flow that feels human-like
-- **Real-Time Processing**: Instant order processing and confirmation
-- **Accessibility Focus**: Designed for customers with visual or mobility limitations
-- **Multi-Platform Support**: Works across phones, tablets, and smart speakers
-- **Analytics Dashboard**: Insights into ordering patterns and customer preferences
+- On Dashboard, Create Assistant asks for a US area code, buys a Twilio number, and attaches it to the assistant.
+- The same screen shows Total Orders Placed, Total Calls, and Total Minutes from Square orders and stored calls.
+- The call table lists start time and duration. View Call in Vapi opens that call in the Vapi dashboard.
 
-## Technical Architecture
+### Configure the voice
 
-Sara is built using modern technologies to ensure reliability and scalability:
+- Playground, titled Configure your Tone & Voice, lists Cartesia and 11Labs voices. Play Sample plays the selected clip, and Save Voice Settings writes the choice.
+- The page shows the assistant's phone number.
+- First message, Restaurant Information, and Reservation Link are saved with Update Restaurant Information. The reservation field is for a link such as OpenTable or Resy.
+- Those fields stay disabled until a menu is on the restaurant.
 
-- **Voice Processing**: Custom-trained models for restaurant-specific vocabulary
-- **Backend Services**: Microservices architecture for handling orders and payments
-- **Real-Time Communication**: WebSocket connections for instant updates
-- **Database**: Optimized storage for menu items, orders, and customer data
-- **Security**: End-to-end encryption for all voice data and transactions
+### Answer the call
 
-## Impact & Results
+- The marketing Demo page shows 570-569-1442, an orb that starts a browser call, and a sample menu with an English and Spanish toggle.
+- A new assistant starts with a pickup greeting and can switch when the caller speaks Spanish. Playground can replace that first message.
+- The ordering guide confirms each item, asks for a phone number, and sends payment only after the caller agrees.
+- The order endpoint maps the items to Square catalog ids, creates a payment link, and texts it in English or Spanish. A saved reservation link can be texted the same way.
 
-Since implementation, restaurants using Sara have seen:
-- 40% reduction in order wait times
-- 25% increase in order accuracy
-- 30% improvement in customer satisfaction scores
-- 20% increase in average order value through intelligent recommendations
+## Technical approach
 
-## Future Enhancements
+The product is a pnpm workspace. The Next.js app is in `apps/web`, tRPC procedures are in `packages/api`, and Prisma models for users, restaurants, assistants, phone numbers, calls, and orders are in `packages/database` on PostgreSQL. Sessions use Lucia.
 
-- Integration with delivery platforms
-- Advanced emotion detection in voice
-- Predictive ordering based on customer history
-- Multi-restaurant chain support
-- Enhanced dietary recommendation engine
+Create Assistant posts a Vapi assistant that runs on OpenAI gpt-4o, with a Deepgram multilingual transcriber and a Cartesia voice. Playground can switch that voice to another Cartesia voice or an 11Labs voice. The area-code search buys a US Twilio number and registers it on the Vapi assistant.
 
-Sara represents the future of restaurant technology, where voice AI creates more inclusive, efficient, and enjoyable dining experiences for everyone. 
+Square OAuth stores the merchant token on the user. Catalog items, orders, and inventory are read from Square, and the chosen Square location is stored on the restaurant. When Vapi calls `/api/vapi/create-order`, a second gpt-4o request maps the order onto catalog ids, Square creates the payment link, and Twilio sends the text. `/api/vapi/send-reservation-link` texts the restaurant's reservation URL. `/api/vapi/call-ended` stores the call's start, end, and Vapi call id.

@@ -1,10 +1,10 @@
 ---
 title: "FlowOps"
-description: "Operations platform for real estate agents: deals, showings, projects and automations in one place"
-technologies: []
+description: "FlowOps keeps a real estate team's deals, showings, contacts, and follow-up work in one place"
+technologies: ["React", "TypeScript", "Supabase", "OpenAI", "Google Gemini", "Google Calendar", "ElevenLabs", "SlickText"]
 status: "Active"
 number: "03"
-type: "Real estate · Operations"
+type: "Software · Real Estate"
 accent: "blue"
 icon: "sparkles"
 image: "/images/projects/flowops-card.png"
@@ -23,25 +23,47 @@ order: 3
 
 ## Overview
 
-FlowOps is the back office for a real estate agent. Deals, listings, showings, contacts, marketing projects and the calendar live in one app, and repetitive follow-up runs on automations.
+FlowOps is the app a real estate team uses to run seller and buyer deals after they sign in. The deal, the people on it, the showing calendar, and the next task sit on the same record. An uploaded listing or buyer agreement can become the client and the deal, and an email, text, or phone request can book or change a showing on that calendar.
 
-## The Problem
+## The problem
 
-An agent's week is spread across a CRM, a calendar, email, text threads and spreadsheets. Every new client means retyping details from a signed agreement. Every showing needs a confirmation text. Every closed deal needs a follow-up that's easy to forget.
+A listing moves through a spreadsheet, a CRM export, an inbox, a text thread, and a calendar. Showing times arrive in those channels and then get typed in by hand. The next task, the lockbox note, the open house, and the walkthrough video sit somewhere else, so the person running the deal has to hunt for them.
 
-## What It Does
+## What it does
 
-### Client onboarding from a document
-Upload a listing or buyer agreement and FlowOps pulls out the client details with AI and creates the profile.
+### Deals
 
-### Deals and listings
-Every property is tracked with its status (upcoming, active, inactive) and its client type (buyer or seller). Deals can be filtered, saved as templates, imported from CSV and exported.
+- On Deals, switch between cards and a table, search, filter by status and client type, apply a saved filter template, Import CSV, or Select & Export to CSV or Excel.
+- Create New Deal starts a seller deal or a buyer deal. AI Upload, on Deals and on Home, takes a listing or buyer agreement, extracts the fields, and stops on a review step before the record is created.
+- The deal page shows the address, Property Details or Transaction Details, assigned people, Tasks, Team Notes, Field Notes, documents, Transaction Overview, and Important Escrow Dates.
+- Edit Deal updates the record. Apply Workflow runs a saved automation on that deal. A seller deal also has a Listing Timeline. A buyer deal uses an Escrow Timeline.
 
-### Projects and tasks
-Marketing campaigns and transactions become projects, with tasks, assignees, due dates, documents and a milestone timeline. Projects can also generate marketing content with AI.
+### Showings
 
-### Calendar
-Showings, tasks and open houses share one calendar with separate toggles for each.
+- Showings lists seller listings that are not sold or cancelled. Expand a listing to schedule a showing, reschedule it, cancel it, or open that listing's calendar.
+- Listing settings turn on online booking and set hours, appointment length, notice, breaks, and access instructions, including a lockbox code.
+- The public book page shows a week of open times, then asks for name, email, phone, and notes, and finishes with Confirm Booking. A guest with the link can open Reschedule or Cancel.
+- Email, SMS, and a phone call can book, reschedule, or cancel a showing. The appointment shows on Showings and on Calendar.
 
-### Automations
-Trigger-based workflows handle the routine work: a text to the requesting agent when a showing is confirmed, a welcome email and pre-marketing checklist when a listing is created, and a check-in task 30 days after a deal closes.
+### Contacts
+
+- Contacts opens People and Directory. Search, filter by person type, Add Person, Import CSV, Manage Labels, and switch between cards and a table.
+- A person page holds phones and emails, addresses, relationships, linked deals, tasks, team notes, documents, a questionnaire, and gifting.
+- The header search looks across listings, contacts, and projects.
+
+### Tasks, projects, and workflows
+
+- Home shows Upcoming, Listings, Pending Deals, and Notifications, plus a Tasks list. A link can open a specific task, subtask, or comment.
+- Projects lets you create a project and filter by Active, Completed, On Hold, or Cancelled. The project page has members, a timeline, tasks, notes, documents, and marketing content, and the project can be public or private.
+- On Workflows, Create Automation adds steps such as Send Email, Create Task, Create Subtask, Create Sub-subtask, Wait/Delay, Update Person Status, Assign Person to Deal, Create Deal, Create Person, Create Notification, and Add Log Entry.
+- Admins use Logs for system activity, and Admin for users, roles, duplicate contacts and deals, calendar settings, showing reminders, and daily reports.
+
+### Walkthrough video and marketing
+
+- On a seller deal, Video Analysis takes a property walkthrough video and shows the transcript, issues, and selling points.
+- Select videos, then Generate Marketing Content, or Generate Issues Report for a combined PDF and DOCX.
+- Marketing Content on the deal, and on a project, can be copied or exported. Open Houses on the deal can be added, edited, or removed.
+
+## Technical approach
+
+The signed-in app is a React and TypeScript interface built with Vite, Tailwind, and React Router. Data, login, files, and server functions live in Supabase Postgres, Auth, Storage, and Edge Functions. Sign-in is Google and includes Google Calendar scope. Automations go onto a Postgres queue named `automation_queue`, and a Deno worker runs the steps. Showings and open houses write Google Calendar events. ApyHub reads uploaded PDFs, and OpenAI extracts the agreement fields and handles inbound email and SMS. Gemini generates marketing copy and is attached to walkthrough video files. ElevenLabs is the phone agent, SlickText sends SMS, and Twilio holds the listing phone numbers.
