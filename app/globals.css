@@ -113,6 +113,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .line-inner { display: block; will-change: transform; }
 .hero-orbit-wrap { position: absolute; inset: 0; pointer-events: none; }
 .project-cell, .project-motion { display: block; height: 100%; }
+.project-motion > .project-card { height: 100%; }
 .project-arrow-wrap { display: inline-flex; }
 .nav-link { position: relative; padding-block: .3rem; }
 .nav-underline { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--accent); }
