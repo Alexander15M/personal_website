@@ -136,6 +136,25 @@ export function getProject(slug: string) {
   return getAllProjects().find((p) => p.slug === slug)
 }
 
+const projectTranslationSchema = z.object({
+  description: z.string(),
+  type: z.string().optional(),
+  status: z.string().optional(),
+  captions: z.array(z.string()).optional(),
+})
+
+export type ProjectTranslation = z.infer<typeof projectTranslationSchema> & { content?: string }
+
+/** Spanish copy lives in content/es/projects, outside the English CMS collection. An empty body keeps the English page. */
+export function getProjectTranslation(slug: string): ProjectTranslation | null {
+  const file = path.join(CONTENT_DIR, 'es', 'projects', `${slug}.mdx`)
+  if (!fs.existsSync(file)) return null
+  const { data, content } = matter(fs.readFileSync(file, 'utf8'))
+  const meta = projectTranslationSchema.parse(data)
+  const body = content.trim()
+  return { ...meta, content: body || undefined }
+}
+
 export const formatDate = (d: Date, locale: 'en' | 'es' = 'en') =>
   d.toLocaleDateString(locale === 'es' ? 'es-ES' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' })
 

@@ -1,5 +1,5 @@
-import type { Post, Project } from '@/lib/content'
-import { localizeFields, tagLabel, type Locale } from '@/lib/i18n'
+import { getProjectTranslation, type Post, type Project } from '@/lib/content'
+import { tagLabel, type Locale } from '@/lib/i18n'
 
 const firstPostEs = `Esta es mi primera publicación en el sitio nuevo. Quiero compartir el camino en desarrollo web y los proyectos en los que estoy trabajando.
 
@@ -55,7 +55,20 @@ const postEs: Record<string, { title: string; description: string; content: stri
 }
 
 export function localizeProject(project: Project, locale: Locale): Project {
-  return localizeFields(project, locale)
+  if (locale !== 'es') return project
+  const extra = getProjectTranslation(project.slug)
+  if (!extra) return project
+  const gallery = extra.captions
+    ? project.gallery.map((shot, i) => (extra.captions?.[i] ? { ...shot, caption: extra.captions[i] } : shot))
+    : project.gallery
+  return {
+    ...project,
+    description: extra.description,
+    type: extra.type ?? project.type,
+    status: extra.status ?? project.status,
+    content: extra.content ?? project.content,
+    gallery,
+  }
 }
 
 export function localizePost(post: Post, locale: Locale): Post {

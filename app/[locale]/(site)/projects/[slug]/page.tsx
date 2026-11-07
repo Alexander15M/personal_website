@@ -84,11 +84,11 @@ export default async function ProjectPage({ params }: Props) {
         </ViewTransition>
       </div>
       <div className="page-body">
-        <Mdx source={project.content} />
-        {project.gallery.length > 0 && (
+        <Mdx source={copy.content} />
+        {copy.gallery.length > 0 && (
           <section className="project-gallery" aria-label={t.gallery}>
             <h2>{t.gallery}</h2>
-            {project.gallery.map((shot) => (
+            {copy.gallery.map((shot) => (
               <figure key={shot.src}>
                 <img src={shot.src} alt={shot.caption ?? ''} loading="lazy" decoding="async" />
                 {shot.caption && <figcaption>{shot.caption}</figcaption>}

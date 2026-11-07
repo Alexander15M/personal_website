@@ -1,0 +1,57 @@
+---
+description: "FlowOps junta los tratos, las visitas, los contactos y el seguimiento de un equipo inmobiliario"
+type: "Software · Inmobiliaria"
+status: "Activo"
+captions:
+  - "Inicio: subes un contrato y la IA arma el perfil del cliente, junto a las tareas de hoy."
+  - "Tratos, con carga por IA, importación CSV y filtros guardados."
+  - "Un proyecto con tareas, una línea de hitos y contenido de marketing generado por IA."
+  - "Automatizaciones que se disparan con visitas, propiedades nuevas y tareas terminadas."
+---
+
+## Resumen
+
+FlowOps es la app que usa un equipo inmobiliario para llevar tratos de vendedores y compradores después de iniciar sesión. El trato, las personas que están en él, el calendario de visitas y la siguiente tarea viven en el mismo registro. Un contrato de listing o de comprador que se sube puede volverse el cliente y el trato, y un correo, un texto o una llamada puede agendar o cambiar una visita en ese calendario.
+
+## El problema
+
+Una propiedad pasa por una hoja de cálculo, una exportación del CRM, una bandeja, un hilo de textos y un calendario. Los horarios de visita llegan por esos canales y después alguien los vuelve a escribir a mano. La siguiente tarea, la nota de la caja de llaves, el open house y el video del recorrido están en otro lado, así que quien lleva el trato tiene que buscarlos.
+
+## Qué hace
+
+### Tratos
+
+- En Deals se puede cambiar entre tarjetas y tabla, buscar, filtrar por estado y tipo de cliente, aplicar un filtro guardado, Import CSV, o Select & Export a CSV o Excel.
+- Create New Deal empieza un trato de vendedor o de comprador. AI Upload, en Deals y en Home, toma un contrato de listing o de comprador, extrae los campos y se detiene en un paso de revisión antes de crear el registro.
+- La página del trato muestra la dirección, Property Details o Transaction Details, las personas asignadas, Tasks, Team Notes, Field Notes, documentos, Transaction Overview e Important Escrow Dates.
+- Edit Deal actualiza el registro. Apply Workflow corre una automatización guardada sobre ese trato. Un trato de vendedor también tiene Listing Timeline. Un trato de comprador usa Escrow Timeline.
+
+### Visitas
+
+- Showings lista las propiedades de vendedor que no están vendidas ni canceladas. Al expandir una se puede agendar una visita, reprogramarla, cancelarla o abrir el calendario de esa propiedad.
+- La configuración de la propiedad enciende las reservas en línea y define horarios, duración de la cita, aviso, descansos e instrucciones de acceso, incluido el código de la caja de llaves.
+- La página pública de reserva muestra una semana de horarios libres, pide nombre, correo, teléfono y notas, y termina en Confirm Booking. Quien tiene el enlace puede abrir Reschedule o Cancel.
+- Un correo, un SMS o una llamada pueden agendar, reprogramar o cancelar una visita. La cita aparece en Showings y en Calendar.
+
+### Contactos
+
+- Contacts abre People y Directory. Se puede buscar, filtrar por tipo de persona, Add Person, Import CSV, Manage Labels, y cambiar entre tarjetas y tabla.
+- La página de una persona guarda teléfonos y correos, direcciones, relaciones, tratos vinculados, tareas, notas del equipo, documentos, un cuestionario y regalos.
+- La búsqueda del encabezado recorre propiedades, contactos y proyectos.
+
+### Tareas, proyectos y flujos
+
+- Home muestra Upcoming, Listings, Pending Deals y Notifications, más una lista de Tasks. Un enlace puede abrir una tarea, una subtarea o un comentario.
+- Projects permite crear un proyecto y filtrar por Active, Completed, On Hold o Cancelled. La página del proyecto tiene miembros, una línea de tiempo, tareas, notas, documentos y contenido de marketing, y el proyecto puede ser público o privado.
+- En Workflows, Create Automation agrega pasos como Send Email, Create Task, Create Subtask, Create Sub-subtask, Wait/Delay, Update Person Status, Assign Person to Deal, Create Deal, Create Person, Create Notification y Add Log Entry.
+- Los administradores usan Logs para la actividad del sistema, y Admin para usuarios, roles, contactos y tratos duplicados, ajustes del calendario, recordatorios de visitas y reportes diarios.
+
+### Video del recorrido y marketing
+
+- En un trato de vendedor, Video Analysis toma un video del recorrido de la propiedad y muestra la transcripción, los problemas y los puntos de venta.
+- Se eligen videos y luego Generate Marketing Content, o Generate Issues Report para un PDF y un DOCX juntos.
+- Marketing Content, en el trato y en un proyecto, se puede copiar o exportar. Open Houses en el trato se pueden agregar, editar o quitar.
+
+## Enfoque técnico
+
+La app con sesión iniciada es una interfaz de React y TypeScript hecha con Vite, Tailwind y React Router. Los datos, el inicio de sesión, los archivos y las funciones de servidor viven en Supabase Postgres, Auth, Storage y Edge Functions. El inicio de sesión es con Google e incluye el permiso de Google Calendar. Las automatizaciones entran a una cola de Postgres llamada `automation_queue`, y un worker de Deno corre los pasos. Las visitas y los open houses escriben eventos en Google Calendar. ApyHub lee los PDF que se suben, y OpenAI extrae los campos del contrato y atiende el correo y el SMS que llegan. Gemini genera el texto de marketing y queda asociado a los videos del recorrido. ElevenLabs es el agente de teléfono, SlickText manda los SMS y Twilio guarda los números de las propiedades.

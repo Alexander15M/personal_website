@@ -1,0 +1,52 @@
+---
+description: "Haven es una IA personal por chat, texto, correo o teléfono, con listas, documentos y recordatorios"
+type: "Software · IA"
+status: "Activo"
+captions:
+  - "Preparación antes de una llamada: un mensaje se convierte en eventos de calendario, recordatorios y una nota."
+  - "El feed: lo que Haven terminó hoy, y lo único que todavía pide tu aprobación."
+  - "Fichas de personas que Haven mantiene al día con tus conversaciones."
+  - "Recordatorios en el celular."
+---
+
+## Resumen
+
+Haven es una IA personal para quien lleva su propio día. La app web y las apps de iPhone y Android comparten una cuenta con el texto, el correo y el teléfono: +1 (435) 260-6500 y chat@hellohaven.ai. Las listas, los documentos, los recordatorios y el perfil en You se quedan en esa cuenta, así que un pedido que empieza en Chat se puede abrir después en Library. Cuando hay un calendario o una bandeja conectados, Haven puede leerlos y actuar una vez que la persona aprueba la acción en Chat.
+
+## El problema
+
+Un hilo de chat, una lista del súper, un recordatorio y una bandeja suelen vivir en apps distintas y no comparten lo que ya se dijo. Ninguna de esas apps contesta un texto o una llamada, y empezar un hilo nuevo deja atrás la lista, el documento y el perfil. Haven guarda esas piezas en una cuenta a la que se llega desde la app, el correo o el teléfono.
+
+## Qué hace
+
+### Chat, texto, correo y teléfono
+
+- Chat cambia entre Quick Ask, un hilo en curso, y Conversations, hilos separados. La caja acepta texto, Dictate y el menú +: Take Photo, Upload, From Haven's Brain, From Haven Docs y From Haven Lists.
+- El menú para llegar a Haven abre Call Me, Text Me, Email Me, Voice Chat y Contact Card. La llamada y el texto usan +1 (435) 260-6500. El correo abre chat@hellohaven.ai.
+- Voice Chat empieza una sesión hablada en la app. Las sugerencias del feed mandan un prompt a una conversación nueva de Chat o abren otra pantalla, y cada una se puede descartar.
+- Library → Conversations lista los hilos y los filtra por App, SMS, Group Chat, Voice, Email, Scheduled o Shared.
+
+### Listas, documentos y recordatorios
+
+- Apps → Keep Organized abre Lists, Docs, Sticky Notes, Note Taker y Agenda. Agenda está marcada como beta.
+- Library muestra esas mismas Lists, Docs y Sticky Notes, más Images, Videos y Audio.
+- Library → Reminders → New reminder define una repetición de Once, Daily, Weekly, Monthly o Yearly, y Send via Email, SMS o Call.
+- Antes de enviar un mensaje o hacer una llamada, Chat muestra una tarjeta de aprobación. You → Your Haven → Advanced tiene el interruptor Let Haven act without asking.
+
+### Apps y salas de foco
+
+- Apps agrupa las fichas en Keep Organized, Know Yourself, Focus & Wellbeing, y estas filas de habilidades: Run My Day, Shop, Book & Return, Make Something, Life & Home y Play & Connect.
+- Tocar una habilidad pone su prompt en la caja del chat para editarlo antes de enviarlo. Un pin deja la ficha arriba de Apps en ese dispositivo.
+- Focus & Wellbeing abre Journal, Brain Dump y Decide. Ground, Body Double, Worry Window y Spark están marcadas como beta.
+- Know Yourself abre Patterns y YouIQ. Las dos fichas están marcadas como beta.
+
+### You, memoria y herramientas conectadas
+
+- You tiene cuatro pestañas: About You, Your Haven, Account y Help. Help & Community también está en /v3/feedback.
+- Your Haven abre la identidad de Haven, Personality, How Haven reaches you, Display, Advanced y Connected tools.
+- Connected tools lista servicios para conectar. Las automatizaciones se pueden disparar desde una herramienta conectada, un mensaje directo de Slack o un horario, y las programadas viven en Library.
+- Library también tiene Memory y Time Capsule, junto a las conversaciones, listas, documentos y recordatorios.
+
+## Enfoque técnico
+
+Este repositorio es el cliente de Haven y su backend en Supabase. La interfaz Daylight es una app de React y TypeScript hecha con Vite, con proyectos de Capacitor para iPhone y Android. Supabase guarda la cuenta y los registros de conversaciones, listas, documentos, recordatorios y herramientas conectadas. Las edge functions mandan el correo de los recordatorios por Resend y los SMS o las llamadas por Twilio. Los turnos de chat, los streams de trabajos, el control del navegador y los servidores MCP que agrega la persona van a un runtime aparte de Haven. La voz dentro de la app usa Vapi, y el catálogo de Connected tools se carga con Composio.

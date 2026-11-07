@@ -1,0 +1,62 @@
+---
+description: "SARA contesta el teléfono del restaurante, toma pedidos para recoger y manda un enlace de pago de Square"
+type: "Software · IA de voz"
+status: "Activo"
+captions:
+  - "Quien llama pide por voz mientras el pedido se arma en vivo."
+  - "Pedidos que llegan al restaurante."
+  - "Panel con pedidos, llamadas, minutos y la grabación de cada llamada."
+  - "La voz de Sara, el saludo y los datos del restaurante."
+---
+
+## Resumen
+
+SARA es un asistente de teléfono para restaurantes que toman pedidos para recoger. Quien llama va diciendo el pedido, SARA lo cruza con el menú de Square y un mensaje de texto lleva el enlace de pago de Square. El dueño define el saludo, la voz y un enlace de reservas en la app, así que el mostrador no tiene que tomar esa llamada, sumar la cuenta ni mandar el cobro.
+
+## El problema
+
+Un pedido para recoger sigue siendo una persona en el teléfono mientras el mostrador atiende. Tiene que oír los productos, cuadrar variaciones y modificadores, repetir el total, confirmar un celular y lograr que el cliente pague. Una reserva es otra interrupción, y quien cambia a español necesita la misma conversación en ese idioma.
+
+## Qué hace
+
+### Configurar el restaurante
+
+- Al registrarse, el paso 1 del onboarding guarda el nombre de la cuenta y el avatar.
+- El paso 2 crea el restaurante a partir del nombre. El paso 3, Change Business Details, guarda horarios de apertura y cierre, días abiertos, dirección y un teléfono de contacto.
+- Settings, en Restaurant y luego General, conserva el nombre del restaurante, el avatar, la ubicación de Square y esos mismos datos del negocio.
+- Settings, en Restaurant y luego Billing, es donde se activa la suscripción. Si el restaurante todavía no tiene número, Dashboard muestra Create Assistant solo mientras la suscripción está activa o en prueba. Si no, enlaza a Billing.
+
+### Sincronizar Square
+
+- Integrations, titulado Sync with POS systems, conecta la cuenta de Square.
+- Después de conectar, Add Menu with items from Square, o Update Menu with items from Square, copia al asistente los nombres del catálogo, las variaciones, los precios, las cantidades y los ids de los productos.
+- Orders abre una hoja con el id del pedido, las líneas, el total y el estado, más Refresh Orders y paginación.
+- Stock abre una hoja de inventario con Refresh y paginación.
+
+### Abrir la línea
+
+- En Dashboard, Create Assistant pide un código de área de Estados Unidos, compra un número de Twilio y lo asigna al asistente.
+- La misma pantalla muestra Total Orders Placed, Total Calls y Total Minutes, a partir de los pedidos de Square y las llamadas guardadas.
+- La tabla de llamadas lista la hora de inicio y la duración. View Call in Vapi abre esa llamada en el panel de Vapi.
+
+### Configurar la voz
+
+- Playground, titulado Configure your Tone & Voice, lista voces de Cartesia y de 11Labs. Play Sample reproduce el clip elegido, y Save Voice Settings guarda la elección.
+- La página muestra el número del asistente.
+- First message, Restaurant Information y Reservation Link se guardan con Update Restaurant Information. El campo de reserva es para un enlace como OpenTable o Resy.
+- Esos campos siguen desactivados hasta que el restaurante tiene un menú.
+
+### Contestar la llamada
+
+- La página de marketing Demo muestra 570-569-1442, un orbe que inicia una llamada en el navegador y un menú de ejemplo con un cambio entre inglés y español.
+- Un asistente nuevo empieza con un saludo para pedidos de recoger y puede cambiar cuando quien llama habla español. Playground puede reemplazar ese primer mensaje.
+- La guía del pedido confirma cada producto, pide un teléfono y manda el pago solo después de que quien llama acepta.
+- El endpoint del pedido cruza los productos con los ids del catálogo de Square, crea un enlace de pago y lo manda por texto en inglés o en español. Un enlace de reservas guardado se puede mandar igual.
+
+## Enfoque técnico
+
+El producto es un workspace de pnpm. La app de Next.js está en `apps/web`, los procedimientos de tRPC en `packages/api`, y los modelos de Prisma para usuarios, restaurantes, asistentes, números, llamadas y pedidos en `packages/database`, sobre PostgreSQL. Las sesiones usan Lucia.
+
+Create Assistant publica un asistente de Vapi que corre con OpenAI gpt-4o, con un transcriptor multilingüe de Deepgram y una voz de Cartesia. Playground puede cambiar esa voz por otra de Cartesia o por una de 11Labs. La búsqueda por código de área compra un número de Twilio en Estados Unidos y lo registra en el asistente de Vapi.
+
+El OAuth de Square guarda el token del comercio en el usuario. Los productos del catálogo, los pedidos y el inventario se leen de Square, y la ubicación elegida se guarda en el restaurante. Cuando Vapi llama a `/api/vapi/create-order`, una segunda petición a gpt-4o cruza el pedido con los ids del catálogo, Square crea el enlace de pago y Twilio manda el texto. `/api/vapi/send-reservation-link` manda por texto la URL de reservas del restaurante. `/api/vapi/call-ended` guarda el inicio, el fin y el id de la llamada en Vapi.
