@@ -1,7 +1,9 @@
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
-import { buttonVariants } from '@/components/ui/button'
-import { ProjectIcon } from '@/components/site/project-icon'
+import { HeroIntro } from '@/components/site/hero-intro'
+import { ProjectCard } from '@/components/site/project-card'
+import { AboutMark, NoteItem } from '@/components/site/scroll-bits'
+import { Reveal, SplitLines, Stagger } from '@/components/motion/primitives'
 import { shortDate, type PostMeta, type Project } from '@/lib/content'
 import { localizeHref, messages, type Locale } from '@/lib/i18n'
 import { localizeProject } from '@/lib/localize'
@@ -10,36 +12,16 @@ import { SITE } from '@/lib/site'
 export function Hero({ locale }: { locale: Locale }) {
   const t = messages[locale]
   return (
-    <section className="hero-section">
-      <div className="hero-kicker">
-        <span /> {t.hero.kicker}
-      </div>
-      <h1>
-        {t.hero.line1}
-        <br />
-        <em>{t.hero.line2}</em>
-      </h1>
-      <p className="hero-copy">{t.hero.copy}</p>
-      <div className="hero-actions">
-        <Link href={localizeHref(locale, '/#work')} className={buttonVariants({ size: 'lg' })}>
-          {t.hero.work} <ArrowUpRight data-icon="inline-end" />
-        </Link>
-        <Link href={localizeHref(locale, '/#about')} className="text-link">
-          {t.hero.about} <span>↓</span>
-        </Link>
-      </div>
-      <div className="hero-orbit" aria-hidden="true">
-        <span className="orbit-track">
-          <i />
-        </span>
-        <span className="orbit-track">
-          <i className="accent" />
-        </span>
-        <span className="orbit-track mid">
-          <i />
-        </span>
-      </div>
-    </section>
+    <HeroIntro
+      kicker={t.hero.kicker}
+      line1={t.hero.line1}
+      line2={t.hero.line2}
+      copy={t.hero.copy}
+      work={t.hero.work}
+      about={t.hero.about}
+      workHref={localizeHref(locale, '/#work')}
+      aboutHref={localizeHref(locale, '/#about')}
+    />
   )
 }
 
@@ -49,35 +31,33 @@ export function WorkSection({ projects, locale }: { projects: Project[]; locale:
     <section id="work" className="section-block work-section">
       <div className="section-heading">
         <div>
-          <p className="eyebrow">{t.work.eyebrow}</p>
-          <h2>
+          <Reveal as="p" className="eyebrow">
+            {t.work.eyebrow}
+          </Reveal>
+          <SplitLines>
             {t.work.line1}
-            <br />
             <span>{t.work.line2}</span>
-          </h2>
+          </SplitLines>
         </div>
       </div>
-      <div className="project-grid">
+      <Stagger className="project-grid">
         {projects.map((project) => {
           const copy = localizeProject(project, locale)
           return (
-            <Link href={localizeHref(locale, `/projects/${project.slug}`)} className={`project-card ${project.accent}`} key={project.slug}>
-              <div className="project-top">
-                <span>{project.number}</span>
-                <ArrowUpRight className="project-arrow" />
-              </div>
-              <div className="project-icon">
-                <ProjectIcon name={project.icon} />
-              </div>
-              <div className="project-info">
-                <p>{copy.type}</p>
-                <h3>{project.title}</h3>
-                <span>{copy.description}</span>
-              </div>
-            </Link>
+            <ProjectCard
+              key={project.slug}
+              href={localizeHref(locale, `/projects/${project.slug}`)}
+              slug={project.slug}
+              accent={project.accent}
+              number={project.number}
+              icon={project.icon}
+              title={project.title}
+              type={copy.type}
+              description={copy.description}
+            />
           )
         })}
-      </div>
+      </Stagger>
     </section>
   )
 }
@@ -86,24 +66,31 @@ export function AboutSection({ locale }: { locale: Locale }) {
   const t = messages[locale]
   return (
     <section id="about" className="about-section">
-      <div className="about-mark">
+      <AboutMark>
         {SITE.shortName}
         <span>.</span>
-      </div>
+      </AboutMark>
       <div>
-        <p className="eyebrow">{t.about.eyebrow}</p>
-        <h2>
+        <Reveal as="p" className="eyebrow">
+          {t.about.eyebrow}
+        </Reveal>
+        <SplitLines>
           {t.about.line1}
-          <br />
           <span>{t.about.line2}</span>
-        </h2>
+        </SplitLines>
       </div>
       <div className="about-copy">
-        <p>{t.about.p1}</p>
-        <p>{t.about.p2}</p>
-        <Link href={localizeHref(locale, '/contact')} className="text-link">
-          {t.about.cta} <ArrowUpRight data-icon="inline-end" />
-        </Link>
+        <Reveal as="p" delay={0.1}>
+          {t.about.p1}
+        </Reveal>
+        <Reveal as="p" delay={0.2}>
+          {t.about.p2}
+        </Reveal>
+        <Reveal delay={0.3}>
+          <Link href={localizeHref(locale, '/contact')} className="text-link">
+            {t.about.cta} <ArrowUpRight data-icon="inline-end" />
+          </Link>
+        </Reveal>
       </div>
     </section>
   )
@@ -115,24 +102,30 @@ export function NotesSection({ posts, locale }: { posts: PostMeta[]; locale: Loc
     <section id="notes" className="section-block notes-section">
       <div className="section-heading notes-heading">
         <div>
-          <p className="eyebrow">{t.notes.eyebrow}</p>
-          <h2>{t.notes.title}</h2>
+          <Reveal as="p" className="eyebrow">
+            {t.notes.eyebrow}
+          </Reveal>
+          <SplitLines>{t.notes.title}</SplitLines>
         </div>
-        <Link href={localizeHref(locale, '/blog')} className="text-link">
-          {t.notes.viewAll} <ArrowUpRight data-icon="inline-end" />
-        </Link>
+        <Reveal>
+          <Link href={localizeHref(locale, '/blog')} className="text-link">
+            {t.notes.viewAll} <ArrowUpRight data-icon="inline-end" />
+          </Link>
+        </Reveal>
       </div>
-      <div className="notes-list">
+      <Stagger className="notes-list">
         {posts.length === 0 && <p className="empty-note">{t.notes.empty}</p>}
         {posts.map((post) => (
-          <Link href={localizeHref(locale, `/blog/${post.slug}`)} className="note-row" key={post.slug}>
-            <span className="note-date">{shortDate(post.pubDate)}</span>
-            <h3>{post.title}</h3>
-            <span className="note-tag">{post.tags[0] ?? ''}</span>
-            <ArrowUpRight className="note-arrow" />
-          </Link>
+          <NoteItem key={post.slug}>
+            <Link href={localizeHref(locale, `/blog/${post.slug}`)} transitionTypes={['nav-forward']} className="note-row">
+              <span className="note-date">{shortDate(post.pubDate)}</span>
+              <h3>{post.title}</h3>
+              <span className="note-tag">{post.tags[0] ?? ''}</span>
+              <ArrowUpRight className="note-arrow" />
+            </Link>
+          </NoteItem>
         ))}
-      </div>
+      </Stagger>
     </section>
   )
 }
@@ -141,18 +134,23 @@ export function ContactSection({ locale }: { locale: Locale }) {
   const t = messages[locale]
   return (
     <section id="contact" className="contact-section">
-      <p className="eyebrow">{t.contactBand.eyebrow}</p>
-      <h2>
+      <Reveal as="p" className="eyebrow">
+        {t.contactBand.eyebrow}
+      </Reveal>
+      <SplitLines>
         {t.contactBand.line1}
-        <br />
         <em>{t.contactBand.line2}</em>
-      </h2>
-      <a className="contact-email" href={`mailto:${SITE.email}`}>
-        {SITE.email} <ArrowUpRight data-icon="inline-end" />
-      </a>
-      <Link className="contact-secondary" href={localizeHref(locale, '/contact')}>
-        {t.contactBand.orForm} <ArrowUpRight size={14} />
-      </Link>
+      </SplitLines>
+      <Reveal delay={0.2}>
+        <a className="contact-email" href={`mailto:${SITE.email}`}>
+          {SITE.email} <ArrowUpRight data-icon="inline-end" />
+        </a>
+      </Reveal>
+      <Reveal delay={0.3}>
+        <Link className="contact-secondary" href={localizeHref(locale, '/contact')}>
+          {t.contactBand.orForm} <ArrowUpRight size={14} />
+        </Link>
+      </Reveal>
     </section>
   )
 }

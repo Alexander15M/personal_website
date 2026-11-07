@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { SiteFooter } from '@/components/site/footer'
 import { LocaleHtmlLang } from '@/components/site/locale-html-lang'
+import { MotionProvider } from '@/components/motion/motion-provider'
 import { SiteNav } from '@/components/site/nav'
 import { isLocale } from '@/lib/i18n'
 
@@ -15,11 +16,13 @@ export default async function SiteLayout({
   if (!isLocale(locale)) notFound()
 
   return (
-    <div className="portfolio-shell">
-      <LocaleHtmlLang locale={locale} />
-      <SiteNav locale={locale} />
-      <main id="top">{children}</main>
-      <SiteFooter locale={locale} />
-    </div>
+    <MotionProvider>
+      <div className="portfolio-shell">
+        <LocaleHtmlLang locale={locale} />
+        <SiteNav locale={locale} />
+        <main id="top">{children}</main>
+        <SiteFooter locale={locale} />
+      </div>
+    </MotionProvider>
   )
 }

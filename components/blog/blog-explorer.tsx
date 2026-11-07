@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import Fuse from 'fuse.js'
+import { AnimatePresence, motion } from 'motion/react'
 import { PostCard, type PostCardData } from '@/components/blog/post-card'
 import { localizeHref, messages, type Locale } from '@/lib/i18n'
 
@@ -103,11 +104,22 @@ export function BlogExplorer({ posts, tags, locale }: { posts: PostCardData[]; t
           {query && !fuse ? t.searching : t.none}
         </p>
       ) : (
-        <div className="post-grid">
-          {visible.map((p) => (
-            <PostCard key={p.slug} post={p} locale={locale} />
-          ))}
-        </div>
+        <motion.div className="post-grid" layout>
+          <AnimatePresence mode="popLayout" initial={false}>
+            {visible.map((p, i) => (
+              <motion.div
+                key={p.slug}
+                layout
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0, transition: { delay: Math.min(i, 8) * 0.04 } }}
+                exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.2 } }}
+                style={{ display: 'flex', flexDirection: 'column' }}
+              >
+                <PostCard post={p} locale={locale} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       )}
       {activeTag && (
         <p className="form-status">

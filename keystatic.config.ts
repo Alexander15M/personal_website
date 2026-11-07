@@ -57,8 +57,15 @@ export default config({
           ],
           defaultValue: 'violet',
         }),
+        image: fields.image({
+          label: 'Card image',
+          description: 'Shown on the card and the project page. Leave empty to keep the icon. Saved under public/images/projects.',
+          directory: 'public/images/projects',
+          publicPath: '/images/projects/',
+        }),
         icon: fields.select({
           label: 'Card icon',
+          description: 'Used when no card image is set.',
           options: [
             { label: 'Sparkles', value: 'sparkles' },
             { label: 'Microphone', value: 'mic' },
@@ -71,6 +78,7 @@ export default config({
           defaultValue: 'sparkles',
         }),
         order: fields.integer({ label: 'Order on home page', defaultValue: 99 }),
+        featured: fields.checkbox({ label: 'Show on home page', defaultValue: true }),
         content: fields.mdx({ label: 'Content' }),
       },
     }),

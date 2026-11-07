@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { ArrowUpRight, Menu, X } from 'lucide-react'
+import { AnimatePresence, motion } from 'motion/react'
 import { buttonVariants } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { cn } from '@/lib/utils'
@@ -12,6 +13,7 @@ import { SITE } from '@/lib/site'
 
 export function SiteNav({ locale }: { locale: Locale }) {
   const [open, setOpen] = useState(false)
+  const [hovered, setHovered] = useState<string | null>(null)
   const pathname = usePathname()
   const router = useRouter()
   const t = messages[locale]
@@ -32,16 +34,24 @@ export function SiteNav({ locale }: { locale: Locale }) {
   }
 
   return (
-    <header className="site-header">
+    <header className="site-header" style={{ viewTransitionName: 'site-header' }}>
       <nav className="site-nav" aria-label={t.navLabel}>
         <Link href={localizeHref(locale, '/')} className="brand" aria-label={`${SITE.name} ${t.home}`}>
           {SITE.shortName}
           <span>.</span>
         </Link>
-        <div className="nav-links">
+        <div className="nav-links" onMouseLeave={() => setHovered(null)}>
           {t.nav.map((l) => (
-            <Link key={l.href} href={localizeHref(locale, l.href)}>
+            <Link
+              key={l.href}
+              href={localizeHref(locale, l.href)}
+              className="nav-link"
+              onMouseEnter={() => setHovered(l.href)}
+              onFocus={() => setHovered(l.href)}
+              onBlur={() => setHovered(null)}
+            >
               {l.label}
+              {hovered === l.href && <motion.span layoutId="nav-underline" className="nav-underline" />}
             </Link>
           ))}
         </div>
@@ -63,15 +73,26 @@ export function SiteNav({ locale }: { locale: Locale }) {
           </button>
         </div>
       </nav>
-      {open && (
-        <div id="mobile-menu" className="mobile-menu sm:hidden">
-          {t.nav.map((l) => (
-            <Link key={l.href} href={localizeHref(locale, l.href)}>
-              {l.label}
-            </Link>
-          ))}
-        </div>
-      )}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            id="mobile-menu"
+            className="mobile-menu sm:hidden"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0, transition: { staggerChildren: 0.05, duration: 0.25 } }}
+            exit={{ opacity: 0, y: -8, transition: { duration: 0.15 } }}
+          >
+            {t.nav.map((l, i) => (
+              <motion.div key={l.href} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.05 * i }}>
+                <Link href={localizeHref(locale, l.href)} style={{ display: 'block' }}>
+                  {l.label}
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </header>
   )
 }

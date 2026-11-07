@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { PageTransition } from '@/components/motion/page-transition'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
@@ -37,9 +38,9 @@ export default async function TagPage({ params }: Props) {
   const name = tagLabel(locale, info.name)
 
   return (
-    <>
+    <PageTransition>
       <div className="page-head">
-        <Link href={localizeHref(locale, '/blog')} className="back-link">
+        <Link href={localizeHref(locale, '/blog')} transitionTypes={['nav-back']} className="back-link">
           <ArrowLeft size={14} /> {t.allPosts}
         </Link>
         <h1>
@@ -57,6 +58,6 @@ export default async function TagPage({ params }: Props) {
           ))}
         </div>
       </div>
-    </>
+    </PageTransition>
   )
 }

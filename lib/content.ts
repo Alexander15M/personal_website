@@ -31,7 +31,9 @@ const projectSchema = z.object({
   type: z.string(),
   accent: z.enum(ACCENTS).default('violet'),
   icon: z.string().default('sparkles'),
+  image: z.string().nullish(),
   order: z.coerce.number().default(99),
+  featured: z.boolean().default(true),
 })
 
 export type PostMeta = z.infer<typeof postSchema> & { slug: string; readingMinutes: number }

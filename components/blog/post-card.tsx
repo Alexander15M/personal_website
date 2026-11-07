@@ -15,7 +15,7 @@ export type PostCardData = {
 export function PostCard({ post, locale }: { post: PostCardData; locale: Locale }) {
   const t = messages[locale].blog
   return (
-    <Link href={localizeHref(locale, `/blog/${post.slug}`)} className="post-card">
+    <Link href={localizeHref(locale, `/blog/${post.slug}`)} transitionTypes={['nav-forward']} className="post-card" style={{ flex: 1 }}>
       <span className="meta">
         {post.draft && <span className="draft-badge">{t.draft} · </span>}
         {post.date} · {post.readingMinutes} {t.minRead}

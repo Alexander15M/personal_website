@@ -1,4 +1,6 @@
+import { ViewTransition } from 'react'
 import type { Metadata } from 'next'
+import { PageTransition } from '@/components/motion/page-transition'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, ArrowUpRight } from 'lucide-react'
@@ -37,13 +39,15 @@ export default async function ProjectPage({ params }: Props) {
   const t = messages[locale].project
 
   return (
-    <>
+    <PageTransition>
       <div className="page-head">
-        <Link href={localizeHref(locale, '/#work')} className="back-link">
+        <Link href={localizeHref(locale, '/#work')} transitionTypes={['nav-back']} className="back-link">
           <ArrowLeft size={14} /> {t.all}
         </Link>
         <h1>{project.title}</h1>
         <p className="lead">{copy.description}</p>
+        {project.image && <img className="project-cover" src={project.image} alt="" />}
+        <ViewTransition name={`project-${project.slug}`} share="morph" default="none">
         <div className={`project-hero ${project.accent}`}>
           <div className="meta-row" style={{ marginTop: 0, color: 'rgba(255,255,255,.8)' }}>
             <span>{copy.type}</span>
@@ -75,10 +79,11 @@ export default async function ProjectPage({ params }: Props) {
             </div>
           )}
         </div>
+        </ViewTransition>
       </div>
       <div className="page-body">
         <Mdx source={project.content} />
       </div>
-    </>
+    </PageTransition>
   )
 }

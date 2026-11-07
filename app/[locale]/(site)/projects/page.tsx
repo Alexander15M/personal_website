@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { PageTransition } from '@/components/motion/page-transition'
 import { notFound } from 'next/navigation'
 import { WorkSection } from '@/components/site/sections'
 import { getAllProjects } from '@/lib/content'
@@ -16,5 +17,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProjectsPage({ params }: Props) {
   const { locale } = await params
   if (!isLocale(locale)) notFound()
-  return <WorkSection projects={getAllProjects()} locale={locale} />
+  return (
+    <PageTransition>
+      <WorkSection projects={getAllProjects()} locale={locale} />
+    </PageTransition>
+  )
 }

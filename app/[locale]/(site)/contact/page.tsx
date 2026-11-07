@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { PageTransition } from '@/components/motion/page-transition'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
 import { ContactForm } from '@/components/site/contact-form'
@@ -26,7 +27,7 @@ export default async function ContactPage({ params }: Props) {
   if (locale === 'es') calendly.searchParams.set('locale', 'es')
 
   return (
-    <>
+    <PageTransition>
       <div className="page-head">
         <p className="eyebrow">{t.eyebrow}</p>
         <h1>
@@ -49,6 +50,6 @@ export default async function ContactPage({ params }: Props) {
           </div>
         </div>
       </div>
-    </>
+    </PageTransition>
   )
 }

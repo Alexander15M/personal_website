@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { PageTransition } from '@/components/motion/page-transition'
 import { notFound } from 'next/navigation'
 import { AboutSection, ContactSection, Hero, NotesSection, WorkSection } from '@/components/site/sections'
 import { getAllPosts, getAllProjects } from '@/lib/content'
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Page({ params }: Props) {
   const { locale } = await params
   if (!isLocale(locale)) notFound()
-  const projects = getAllProjects()
+  const projects = getAllProjects().filter((p) => p.featured)
   const posts = getAllPosts()
     .slice(0, 3)
     .map((post) => {
@@ -33,12 +34,12 @@ export default async function Page({ params }: Props) {
     })
 
   return (
-    <>
+    <PageTransition>
       <Hero locale={locale} />
       <WorkSection projects={projects} locale={locale} />
       <AboutSection locale={locale} />
       <NotesSection posts={posts} locale={locale} />
       <ContactSection locale={locale} />
-    </>
+    </PageTransition>
   )
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { PageTransition } from '@/components/motion/page-transition'
 import { notFound } from 'next/navigation'
 import { BlogExplorer } from '@/components/blog/blog-explorer'
 import { toCard } from '@/lib/blog-view'
@@ -24,7 +25,7 @@ export default async function BlogIndex({ params }: Props) {
   const tags = getAllTags().map((tag) => ({ ...tag, name: tagLabel(locale, tag.name) }))
 
   return (
-    <>
+    <PageTransition>
       <div className="page-head">
         <p className="eyebrow">{t.eyebrow}</p>
         <h1>
@@ -35,6 +36,6 @@ export default async function BlogIndex({ params }: Props) {
       <div className="page-body">
         <BlogExplorer posts={posts.map((post) => toCard(post, locale))} tags={tags} locale={locale} />
       </div>
-    </>
+    </PageTransition>
   )
 }

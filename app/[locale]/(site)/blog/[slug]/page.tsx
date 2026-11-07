@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { PageTransition } from '@/components/motion/page-transition'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
@@ -71,10 +72,10 @@ export default async function PostPage({ params }: Props) {
   }
 
   return (
-    <>
+    <PageTransition>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
       <div className="page-head">
-        <Link href={localizeHref(locale, '/blog')} className="back-link">
+        <Link href={localizeHref(locale, '/blog')} transitionTypes={['nav-back']} className="back-link">
           <ArrowLeft size={14} /> {t.allPosts}
         </Link>
         <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>{post.title}</h1>
@@ -136,6 +137,6 @@ export default async function PostPage({ params }: Props) {
           </div>
         </section>
       )}
-    </>
+    </PageTransition>
   )
 }

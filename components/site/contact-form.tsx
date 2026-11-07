@@ -48,7 +48,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
       <button type="submit" disabled={status === 'sending'} className={cn(buttonVariants({ size: 'lg' }), 'cursor-pointer')}>
         {status === 'sending' ? t.sending : t.send}
       </button>
-      <p className="form-status" role="status">
+      <p className="form-status" role="status" key={status} data-status={status}>
         {status === 'sent' && t.sent}
         {status === 'error' && error}
       </p>
