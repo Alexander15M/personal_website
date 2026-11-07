@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getAllPosts } from '@/lib/content'
+import { SITE } from '@/lib/site'
 
 export const dynamic = 'force-static'
 
@@ -16,6 +17,7 @@ function plainText(md: string) {
 
 /** Static search index, generated at build time and queried client-side with Fuse.js. */
 export function GET() {
+  if (!SITE.blog) return NextResponse.json([])
   const index = getAllPosts().map((p) => ({
     slug: p.slug,
     title: p.title,

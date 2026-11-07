@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: { default: SITE.title, template: `%s, ${SITE.name}` },
   description: SITE.description,
   authors: [{ name: SITE.name, url: SITE.url }],
-  alternates: { types: { 'application/rss+xml': '/rss.xml' } },
+  alternates: SITE.blog ? { types: { 'application/rss+xml': '/rss.xml' } } : undefined,
   openGraph: { type: 'website', siteName: SITE.name, title: SITE.title, description: SITE.description },
   twitter: { card: 'summary_large_image' },
   icons: {

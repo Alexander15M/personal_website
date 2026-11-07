@@ -18,6 +18,7 @@ export function SiteNav({ locale }: { locale: Locale }) {
   const pathname = usePathname()
   const router = useRouter()
   const t = messages[locale]
+  const links = SITE.blog ? t.nav : t.nav.filter((l) => l.href !== '/blog')
 
   useEffect(() => setOpen(false), [pathname])
 
@@ -41,7 +42,7 @@ export function SiteNav({ locale }: { locale: Locale }) {
           <Logo className="brand-logo" />
         </Link>
         <div className="nav-links" onMouseLeave={() => setHovered(null)}>
-          {t.nav.map((l) => (
+          {links.map((l) => (
             <Link
               key={l.href}
               href={localizeHref(locale, l.href)}
@@ -82,7 +83,7 @@ export function SiteNav({ locale }: { locale: Locale }) {
             animate={{ opacity: 1, y: 0, transition: { staggerChildren: 0.05, duration: 0.25 } }}
             exit={{ opacity: 0, y: -8, transition: { duration: 0.15 } }}
           >
-            {t.nav.map((l, i) => (
+            {links.map((l, i) => (
               <motion.div key={l.href} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.05 * i }}>
                 <Link href={localizeHref(locale, l.href)} style={{ display: 'block' }}>
                   {l.label}

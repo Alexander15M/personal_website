@@ -7,18 +7,20 @@ import { PostCard } from '@/components/blog/post-card'
 import { toCard } from '@/lib/blog-view'
 import { getAllTags, getPostsByTag } from '@/lib/content'
 import { isLocale, localizeHref, messages, pageAlternates, tagLabel } from '@/lib/i18n'
+import { SITE } from '@/lib/site'
 
 export const revalidate = 3600
 
 type Props = { params: Promise<{ locale: string; tag: string }> }
 
 export function generateStaticParams() {
+  if (!SITE.blog) return []
   return getAllTags().map((t) => ({ tag: t.slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, tag } = await params
-  if (!isLocale(locale)) return {}
+  if (!SITE.blog || !isLocale(locale)) return {}
   const info = getAllTags().find((t) => t.slug === tag)
   if (!info) return {}
   const name = tagLabel(locale, info.name)
@@ -30,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function TagPage({ params }: Props) {
   const { locale, tag } = await params
-  if (!isLocale(locale)) notFound()
+  if (!SITE.blog || !isLocale(locale)) notFound()
   const info = getAllTags().find((t) => t.slug === tag)
   if (!info) notFound()
   const posts = getPostsByTag(tag)

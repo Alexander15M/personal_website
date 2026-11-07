@@ -5,6 +5,7 @@ import { AboutSection, ContactSection, Hero, NotesSection, WorkSection } from '@
 import { getAllPosts, getAllProjects } from '@/lib/content'
 import { isLocale, messages, pageAlternates } from '@/lib/i18n'
 import { displayTag, localizePost } from '@/lib/localize'
+import { SITE } from '@/lib/site'
 
 export const revalidate = 3600
 
@@ -26,19 +27,21 @@ export default async function Page({ params }: Props) {
   const { locale } = await params
   if (!isLocale(locale)) notFound()
   const projects = getAllProjects().filter((p) => p.featured)
-  const posts = getAllPosts()
-    .slice(0, 3)
-    .map((post) => {
-      const localized = localizePost(post, locale)
-      return { ...localized, tags: post.tags.map((tag) => displayTag(locale, tag)) }
-    })
+  const posts = SITE.blog
+    ? getAllPosts()
+        .slice(0, 3)
+        .map((post) => {
+          const localized = localizePost(post, locale)
+          return { ...localized, tags: post.tags.map((tag) => displayTag(locale, tag)) }
+        })
+    : []
 
   return (
     <PageTransition>
       <Hero locale={locale} />
       <WorkSection projects={projects} locale={locale} />
       <AboutSection locale={locale} />
-      <NotesSection posts={posts} locale={locale} />
+      {SITE.blog && <NotesSection posts={posts} locale={locale} />}
       <ContactSection locale={locale} />
     </PageTransition>
   )

@@ -21,9 +21,11 @@ export function SiteFooter({ locale }: { locale: Locale }) {
           <Mail />
           <span>{SITE.email}</span>
         </a>
-        <a href="/rss.xml" aria-label={t.footer.rss}>
-          <Rss />
-        </a>
+        {SITE.blog && (
+          <a href="/rss.xml" aria-label={t.footer.rss}>
+            <Rss />
+          </a>
+        )}
       </div>
       <span>{t.footer.built}</span>
     </footer>

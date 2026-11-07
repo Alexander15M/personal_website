@@ -9,5 +9,7 @@ export const SITE = {
   linkedin: 'https://www.linkedin.com/in/alexander-meneses-arismendi/',
   calendly: 'https://calendly.com/alexanderdev-contact/30min',
   email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'contact@alexmeneses.com',
+  /** Flip on to show the blog in the nav, on the home page, and at /blog. */
+  blog: false,
 } as const
 

@@ -8,6 +8,7 @@ const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
 
 export function GET() {
+  if (!SITE.blog) return new Response(null, { status: 404 })
   const posts = getAllPosts().filter((p) => !p.draft && p.pubDate.getTime() <= Date.now())
   const items = posts
     .map((p) => {

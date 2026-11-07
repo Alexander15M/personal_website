@@ -16,12 +16,13 @@ export const revalidate = 3600
 type Props = { params: Promise<{ locale: string; slug: string }> }
 
 export function generateStaticParams() {
+  if (!SITE.blog) return []
   return getAllPosts().map((p) => ({ slug: p.slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
-  if (!isLocale(locale)) return {}
+  if (!SITE.blog || !isLocale(locale)) return {}
   const post = getPost(slug)
   if (!post) return {}
   const localized = localizePost(post, locale)
@@ -48,7 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PostPage({ params }: Props) {
   const { locale, slug } = await params
-  if (!isLocale(locale)) notFound()
+  if (!SITE.blog || !isLocale(locale)) notFound()
   const source = getPost(slug)
   if (!source) notFound()
   const post = localizePost(source, locale)

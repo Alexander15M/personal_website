@@ -5,6 +5,7 @@ import { BlogExplorer } from '@/components/blog/blog-explorer'
 import { toCard } from '@/lib/blog-view'
 import { getAllPosts, getAllTags } from '@/lib/content'
 import { isLocale, messages, pageAlternates, tagLabel } from '@/lib/i18n'
+import { SITE } from '@/lib/site'
 
 export const revalidate = 3600
 
@@ -12,14 +13,14 @@ type Props = { params: Promise<{ locale: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
-  if (!isLocale(locale)) return {}
+  if (!SITE.blog || !isLocale(locale)) return {}
   const t = messages[locale].blog
   return { title: t.title, description: t.description, alternates: pageAlternates(locale, '/blog') }
 }
 
 export default async function BlogIndex({ params }: Props) {
   const { locale } = await params
-  if (!isLocale(locale)) notFound()
+  if (!SITE.blog || !isLocale(locale)) notFound()
   const t = messages[locale].blog
   const posts = getAllPosts()
   const tags = getAllTags().map((tag) => ({ ...tag, name: tagLabel(locale, tag.name) }))
