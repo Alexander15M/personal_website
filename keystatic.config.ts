@@ -97,6 +97,11 @@ export default config({
         }),
         order: fields.integer({ label: 'Order on home page', defaultValue: 99 }),
         featured: fields.checkbox({ label: 'Show on home page', defaultValue: true }),
+        hidden: fields.checkbox({
+          label: 'Hidden',
+          description: 'Kept in the files and left off the site, including its own page.',
+          defaultValue: false,
+        }),
         content: fields.mdx({ label: 'Content' }),
       },
     }),

@@ -36,6 +36,7 @@ const projectSchema = z.object({
   gallery: z.array(z.object({ src: z.string(), caption: z.string().nullish() })).default([]),
   order: z.coerce.number().default(99),
   featured: z.boolean().default(true),
+  hidden: z.boolean().default(false),
 })
 
 export type PostMeta = z.infer<typeof postSchema> & { slug: string; readingMinutes: number }
@@ -129,6 +130,7 @@ export function getAllProjects(): Project[] {
       const { data, content } = matter(raw)
       return { ...projectSchema.parse(data), slug, content }
     })
+    .filter((p) => !p.hidden)
     .sort((a, b) => a.order - b.order)
 }
 
