@@ -140,6 +140,7 @@ const en = {
     status: 'Status',
     visit: 'Visit site',
     source: 'Source',
+    gallery: 'Screenshots',
     og: 'Project',
   },
 }
@@ -259,6 +260,7 @@ const es: typeof en = {
     status: 'Estado',
     visit: 'Ver sitio',
     source: 'Código',
+    gallery: 'Capturas',
     og: 'Proyecto',
   },
 }
@@ -285,6 +287,11 @@ const projectEs: Record<string, { description: string; type: string; status: str
   sara: {
     description: 'Asistente de voz para restaurantes: pedir comida hablando, con IA',
     type: 'Interfaz de voz · SaaS',
+    status: 'Activo',
+  },
+  flowops: {
+    description: 'Plataforma de operaciones para agentes inmobiliarios: tratos, visitas, proyectos y automatizaciones en un solo lugar',
+    type: 'Inmobiliaria · Operaciones',
     status: 'Activo',
   },
   loma: {

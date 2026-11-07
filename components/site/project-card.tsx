@@ -13,12 +13,13 @@ type Props = {
   accent: string
   number: string
   icon: string
+  image?: string | null
   title: string
   type: string
   description: string
 }
 
-export function ProjectCard({ href, slug, accent, number, icon, title, type, description }: Props) {
+export function ProjectCard({ href, slug, accent, number, icon, image, title, type, description }: Props) {
   return (
     <motion.div variants={fadeUp} className="project-cell">
       <motion.div whileHover="hover" whileTap={{ scale: 0.985 }} initial="rest" animate="rest" className="project-motion">
@@ -30,13 +31,23 @@ export function ProjectCard({ href, slug, accent, number, icon, title, type, des
                 <ArrowUpRight className="project-arrow" />
               </motion.span>
             </div>
-            <motion.div
-              className="project-icon"
-              variants={{ rest: { rotate: 0, scale: 1 }, hover: { rotate: 8, scale: 1.05 } }}
-              transition={{ type: 'spring', stiffness: 220, damping: 18 }}
-            >
-              <ProjectIcon name={icon} />
-            </motion.div>
+            {image ? (
+              <motion.div
+                className="project-media"
+                variants={{ rest: { y: 0, scale: 1 }, hover: { y: -6, scale: 1.04 } }}
+                transition={{ type: 'spring', stiffness: 220, damping: 20 }}
+              >
+                <img src={image} alt="" width={1500} height={1200} loading="lazy" decoding="async" />
+              </motion.div>
+            ) : (
+              <motion.div
+                className="project-icon"
+                variants={{ rest: { rotate: 0, scale: 1 }, hover: { rotate: 8, scale: 1.05 } }}
+                transition={{ type: 'spring', stiffness: 220, damping: 18 }}
+              >
+                <ProjectIcon name={icon} />
+              </motion.div>
+            )}
             <div className="project-info">
               <p>{type}</p>
               <h3>{title}</h3>

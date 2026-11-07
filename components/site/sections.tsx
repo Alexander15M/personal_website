@@ -51,6 +51,7 @@ export function WorkSection({ projects, locale }: { projects: Project[]; locale:
               accent={project.accent}
               number={project.number}
               icon={project.icon}
+              image={project.image}
               title={project.title}
               type={copy.type}
               description={copy.description}

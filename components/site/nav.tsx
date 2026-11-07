@@ -7,6 +7,7 @@ import { ArrowUpRight, Menu, X } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { buttonVariants } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { Logo } from '@/components/site/logo'
 import { cn } from '@/lib/utils'
 import { localizeHref, messages, type Locale } from '@/lib/i18n'
 import { SITE } from '@/lib/site'
@@ -37,8 +38,7 @@ export function SiteNav({ locale }: { locale: Locale }) {
     <header className="site-header" style={{ viewTransitionName: 'site-header' }}>
       <nav className="site-nav" aria-label={t.navLabel}>
         <Link href={localizeHref(locale, '/')} className="brand" aria-label={`${SITE.name} ${t.home}`}>
-          {SITE.shortName}
-          <span>.</span>
+          <Logo className="brand-logo" />
         </Link>
         <div className="nav-links" onMouseLeave={() => setHovered(null)}>
           {t.nav.map((l) => (

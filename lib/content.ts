@@ -32,6 +32,8 @@ const projectSchema = z.object({
   accent: z.enum(ACCENTS).default('violet'),
   icon: z.string().default('sparkles'),
   image: z.string().nullish(),
+  cover: z.string().nullish(),
+  gallery: z.array(z.object({ src: z.string(), caption: z.string().nullish() })).default([]),
   order: z.coerce.number().default(99),
   featured: z.boolean().default(true),
 })

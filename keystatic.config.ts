@@ -59,10 +59,28 @@ export default config({
         }),
         image: fields.image({
           label: 'Card image',
-          description: 'Shown on the card and the project page. Leave empty to keep the icon. Saved under public/images/projects.',
+          description: 'Shown on the home page card (1500×1200, transparent PNG). Leave empty to keep the icon.',
           directory: 'public/images/projects',
           publicPath: '/images/projects/',
         }),
+        cover: fields.image({
+          label: 'Cover image',
+          description: 'Shown at the top of the project page (2400×1350).',
+          directory: 'public/images/projects',
+          publicPath: '/images/projects/',
+        }),
+        gallery: fields.array(
+          fields.object({
+            src: fields.image({
+              label: 'Screenshot',
+              directory: 'public/images/projects',
+              publicPath: '/images/projects/',
+              validation: { isRequired: true },
+            }),
+            caption: fields.text({ label: 'Caption' }),
+          }),
+          { label: 'Gallery', itemLabel: (props) => props.fields.caption.value || 'Screenshot' },
+        ),
         icon: fields.select({
           label: 'Card icon',
           description: 'Used when no card image is set.',

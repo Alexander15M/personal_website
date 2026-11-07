@@ -46,9 +46,11 @@ export default async function ProjectPage({ params }: Props) {
         </Link>
         <h1>{project.title}</h1>
         <p className="lead">{copy.description}</p>
-        {project.image && <img className="project-cover" src={project.image} alt="" />}
         <ViewTransition name={`project-${project.slug}`} share="morph" default="none">
         <div className={`project-hero ${project.accent}`}>
+          {project.cover && (
+            <img className="project-cover" src={project.cover} alt={project.title} width={2400} height={1350} fetchPriority="high" />
+          )}
           <div className="meta-row" style={{ marginTop: 0, color: 'rgba(255,255,255,.8)' }}>
             <span>{copy.type}</span>
             <span>
@@ -83,6 +85,17 @@ export default async function ProjectPage({ params }: Props) {
       </div>
       <div className="page-body">
         <Mdx source={project.content} />
+        {project.gallery.length > 0 && (
+          <section className="project-gallery" aria-label={t.gallery}>
+            <h2>{t.gallery}</h2>
+            {project.gallery.map((shot) => (
+              <figure key={shot.src}>
+                <img src={shot.src} alt={shot.caption ?? ''} loading="lazy" decoding="async" />
+                {shot.caption && <figcaption>{shot.caption}</figcaption>}
+              </figure>
+            ))}
+          </section>
+        )}
       </div>
     </PageTransition>
   )
